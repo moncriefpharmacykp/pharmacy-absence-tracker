@@ -1,166 +1,269 @@
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pharmacy Employee Absence Log</title>
 <style>
 *{box-sizing:border-box;margin:0;padding:0}
-body{font-family:var(--font-sans);font-size:14px;color:var(--color-text-primary)}
-.app{padding:1rem 0}
-.tabs{display:flex;gap:4px;border-bottom:0.5px solid var(--color-border-tertiary);margin-bottom:1.5rem}
-.tab{padding:8px 16px;border:none;background:none;cursor:pointer;font-size:13px;color:var(--color-text-secondary);border-bottom:2px solid transparent;margin-bottom:-0.5px;font-family:var(--font-sans)}
-.tab.active{color:var(--color-text-primary);border-bottom-color:var(--color-text-primary);font-weight:500}
-.section{display:none}.section.active{display:block}
-.card{background:var(--color-background-primary);border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-lg);padding:1rem 1.25rem;margin-bottom:1rem}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
-.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:12px}
-.metric{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:1rem;text-align:center}
-.metric-label{font-size:12px;color:var(--color-text-secondary);margin-bottom:4px}
-.metric-value{font-size:22px;font-weight:500}
-.metric-sub{font-size:11px;color:var(--color-text-secondary);margin-top:2px}
-.btn{padding:7px 14px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-secondary);background:transparent;cursor:pointer;font-size:13px;font-family:var(--font-sans);color:var(--color-text-primary)}
-.btn:hover{background:var(--color-background-secondary)}
-.btn-primary{background:var(--color-text-primary);color:var(--color-background-primary);border-color:var(--color-text-primary)}
-.btn-primary:hover{opacity:0.85}
-label{font-size:12px;color:var(--color-text-secondary);display:block;margin-bottom:4px}
-input,select{width:100%;padding:7px 10px;border:0.5px solid var(--color-border-tertiary);border-radius:var(--border-radius-md);background:var(--color-background-primary);color:var(--color-text-primary);font-size:13px;font-family:var(--font-sans)}
-input:focus,select:focus{outline:none;border-color:var(--color-border-primary)}
-.emp-row{display:flex;align-items:center;gap:12px;padding:10px 0;border-bottom:0.5px solid var(--color-border-tertiary)}
-.emp-row:last-child{border-bottom:none}
-.avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:500;font-size:12px;flex-shrink:0}
-.emp-info{flex:1;min-width:0}
-.emp-name{font-weight:500;font-size:14px}
-.emp-dept{font-size:12px;color:var(--color-text-secondary)}
-.badge{display:inline-block;padding:2px 8px;border-radius:var(--border-radius-md);font-size:11px;font-weight:500}
-.badge-callout{background:#FAEEDA;color:#854F0B}
-.badge-vacation{background:#E6F1FB;color:#185FA5}
-table{width:100%;border-collapse:collapse;font-size:13px}
-th{text-align:left;padding:8px 10px;font-weight:500;font-size:12px;color:var(--color-text-secondary);border-bottom:0.5px solid var(--color-border-tertiary)}
-td{padding:8px 10px;border-bottom:0.5px solid var(--color-border-tertiary)}
-tr:last-child td{border-bottom:none}
-.form-group{margin-bottom:12px}
-.flex-end{display:flex;justify-content:flex-end;gap:8px;margin-top:1rem}
-.section-title{font-size:15px;font-weight:500;margin-bottom:1rem;display:flex;align-items:center;gap:8px}
-.alert{padding:10px 14px;border-radius:var(--border-radius-md);font-size:13px;margin-bottom:1rem}
-.modal-bg{position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.4);display:none;align-items:center;justify-content:center;z-index:100}
-.modal-bg.open{display:flex}
-.modal{background:var(--color-background-primary);border-radius:var(--border-radius-lg);border:0.5px solid var(--color-border-tertiary);padding:1.5rem;width:380px;max-width:95vw}
-.modal h3{font-size:16px;font-weight:500;margin-bottom:1rem}
-.type-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:1rem}
-.type-btn{padding:10px 6px;border-radius:var(--border-radius-md);border:0.5px solid var(--color-border-tertiary);background:transparent;cursor:pointer;font-size:12px;font-family:var(--font-sans);text-align:center;color:var(--color-text-secondary)}
-.type-btn.selected-callout{background:#FAEEDA;color:#854F0B;border-color:#EF9F27;font-weight:500}
-.type-btn.selected-vacation{background:#E6F1FB;color:#185FA5;border-color:#85B7EB;font-weight:500}
-.hours-row{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.hours-hint{font-size:11px;color:var(--color-text-secondary);margin-top:4px}
-.rpt-summary{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:1rem}
-.rpt-metric{background:var(--color-background-secondary);border-radius:var(--border-radius-md);padding:10px 12px}
-.rpt-metric-label{font-size:11px;color:var(--color-text-secondary);margin-bottom:2px}
-.rpt-metric-value{font-size:18px;font-weight:500}
-.rpt-metric-sub{font-size:11px;color:var(--color-text-secondary)}
-.hrs-pill{display:inline-block;padding:1px 6px;border-radius:var(--border-radius-md);font-size:11px;background:var(--color-background-secondary);color:var(--color-text-secondary);margin-left:4px}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:14px;background:#F5F6FA;color:#1a1a2e}
+
+/* Header */
+.header{background:#1a1a2e;color:#fff;padding:14px 24px;display:flex;align-items:center;justify-content:space-between}
+.header-title{font-size:16px;font-weight:600;letter-spacing:0.3px}
+.header-sub{font-size:12px;opacity:0.6;margin-top:2px}
+
+/* Tabs */
+.tabs{background:#fff;border-bottom:1px solid #e5e7eb;display:flex;padding:0 24px}
+.tab{padding:12px 18px;border:none;background:none;cursor:pointer;font-size:13px;font-weight:500;color:#6b7280;border-bottom:2px solid transparent;margin-bottom:-1px;font-family:inherit}
+.tab.active{color:#1a1a2e;border-bottom-color:#1a1a2e}
+.tab:hover:not(.active){color:#374151}
+
+/* Layout */
+.page{display:none;padding:24px}.page.active{display:block}
+
+/* Stats */
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:20px}
+.stat-card{background:#fff;border-radius:8px;padding:16px 20px;border:1px solid #e5e7eb}
+.stat-label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#9ca3af;margin-bottom:6px}
+.stat-value{font-size:26px;font-weight:700;color:#1a1a2e;line-height:1}
+.stat-sub{font-size:11px;color:#9ca3af;margin-top:4px}
+.stat-card.accent-red .stat-value{color:#dc2626}
+.stat-card.accent-amber .stat-value{color:#d97706}
+.stat-card.accent-blue .stat-value{color:#2563eb}
+
+/* Cards */
+.card{background:#fff;border-radius:8px;border:1px solid #e5e7eb;margin-bottom:16px}
+.card-header{padding:14px 20px;border-bottom:1px solid #f3f4f6;display:flex;align-items:center;justify-content:space-between}
+.card-title{font-size:13px;font-weight:600;color:#374151}
+.card-body{padding:0}
+
+/* Tables */
+table{width:100%;border-collapse:collapse}
+thead th{background:#f9fafb;padding:10px 16px;text-align:left;font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.5px;color:#6b7280;border-bottom:1px solid #e5e7eb;white-space:nowrap}
+tbody td{padding:10px 16px;border-bottom:1px solid #f3f4f6;font-size:13px;vertical-align:middle}
+tbody tr:last-child td{border-bottom:none}
+tbody tr:hover{background:#fafafa}
+.num{text-align:center}
+.num-val{text-align:center;font-weight:600}
+
+/* Badges */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;white-space:nowrap}
+.badge-callout{background:#fef3c7;color:#92400e;border:1px solid #fde68a}
+.badge-vacation{background:#dbeafe;color:#1e40af;border:1px solid #bfdbfe}
+.badge-none{background:#f3f4f6;color:#9ca3af;font-size:11px}
+
+/* Today absent highlight */
+.absent-row{background:#fffbeb !important}
+
+/* Form */
+.form-card{background:#fff;border-radius:8px;border:1px solid #e5e7eb;padding:24px;max-width:500px}
+.form-title{font-size:15px;font-weight:600;margin-bottom:20px;color:#1a1a2e}
+.form-group{margin-bottom:14px}
+.form-group label{display:block;font-size:12px;font-weight:600;color:#374151;margin-bottom:5px;text-transform:uppercase;letter-spacing:0.4px}
+.form-group input,.form-group select,.form-group textarea{width:100%;padding:9px 12px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;font-family:inherit;color:#1a1a2e;background:#fff;transition:border-color 0.15s}
+.form-group input:focus,.form-group select:focus,.form-group textarea:focus{outline:none;border-color:#1a1a2e}
+.type-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.type-btn{padding:12px;border:1px solid #d1d5db;border-radius:6px;background:#fff;cursor:pointer;font-size:13px;font-weight:500;font-family:inherit;color:#6b7280;text-align:center;transition:all 0.15s}
+.type-btn:hover{border-color:#9ca3af}
+.type-btn.sel-callout{background:#fffbeb;border-color:#f59e0b;color:#92400e;font-weight:600}
+.type-btn.sel-vacation{background:#eff6ff;border-color:#3b82f6;color:#1e40af;font-weight:600}
+.hours-quick{display:flex;gap:8px;margin-top:6px}
+.hours-quick button{padding:5px 12px;border:1px solid #d1d5db;border-radius:5px;background:#f9fafb;cursor:pointer;font-size:12px;font-family:inherit;color:#374151}
+.hours-quick button:hover{background:#e5e7eb}
+.btn-submit{width:100%;padding:11px;background:#1a1a2e;color:#fff;border:none;border-radius:6px;font-size:14px;font-weight:600;cursor:pointer;font-family:inherit;margin-top:6px;transition:opacity 0.15s}
+.btn-submit:hover{opacity:0.88}
+.btn-submit:disabled{opacity:0.5;cursor:not-allowed}
+.alert{padding:10px 14px;border-radius:6px;font-size:13px;margin-top:12px}
+.alert-success{background:#ecfdf5;color:#065f46;border:1px solid #a7f3d0}
+.alert-error{background:#fef2f2;color:#991b1b;border:1px solid #fecaca}
+
+/* Report filters */
+.filter-bar{background:#fff;border-radius:8px;border:1px solid #e5e7eb;padding:16px 20px;margin-bottom:16px;display:grid;grid-template-columns:1fr 1fr 1fr auto;gap:12px;align-items:end}
+.filter-bar label{font-size:11px;font-weight:600;text-transform:uppercase;letter-spacing:0.4px;color:#6b7280;display:block;margin-bottom:4px}
+.filter-bar select,.filter-bar input{width:100%;padding:8px 10px;border:1px solid #d1d5db;border-radius:6px;font-size:13px;font-family:inherit}
+.btn-run{padding:9px 20px;background:#1a1a2e;color:#fff;border:none;border-radius:6px;font-size:13px;font-weight:600;cursor:pointer;font-family:inherit;white-space:nowrap}
+
+/* Action btns */
+.btn-del{padding:3px 8px;border:1px solid #e5e7eb;background:#fff;border-radius:4px;cursor:pointer;font-size:11px;color:#9ca3af;font-family:inherit}
+.btn-del:hover{border-color:#fca5a5;color:#dc2626;background:#fef2f2}
+.btn-edit{padding:3px 8px;border:1px solid #e5e7eb;background:#fff;border-radius:4px;cursor:pointer;font-size:11px;color:#9ca3af;font-family:inherit;margin-right:4px}
+.btn-edit:hover{border-color:#93c5fd;color:#2563eb;background:#eff6ff}
+
+/* Edit Modal */
+.modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.45);display:none;align-items:center;justify-content:center;z-index:200;padding:16px}
+.modal-overlay.open{display:flex}
+.modal{background:#fff;border-radius:10px;padding:24px;width:100%;max-width:420px;box-shadow:0 20px 60px rgba(0,0,0,0.2)}
+.modal-title{font-size:15px;font-weight:600;color:#1a1a2e;margin-bottom:4px}
+.modal-sub{font-size:12px;color:#9ca3af;margin-bottom:20px}
+.modal-footer{display:flex;gap:8px;margin-top:20px}
+.btn-cancel{flex:1;padding:10px;border:1px solid #d1d5db;border-radius:6px;background:#fff;cursor:pointer;font-size:13px;font-weight:500;font-family:inherit;color:#374151}
+.btn-cancel:hover{background:#f9fafb}
+.btn-save{flex:2;padding:10px;background:#1a1a2e;color:#fff;border:none;border-radius:6px;cursor:pointer;font-size:13px;font-weight:600;font-family:inherit}
+.btn-save:hover{opacity:0.88}
+.btn-save:disabled{opacity:0.5;cursor:not-allowed}
+
+/* Empty state */
+.empty{padding:32px;text-align:center;color:#9ca3af;font-size:13px}
+
+/* Responsive */
+@media(max-width:640px){
+  .stats-grid{grid-template-columns:1fr 1fr}
+  .filter-bar{grid-template-columns:1fr 1fr}
+  .page{padding:12px}
+  .header{padding:12px 16px}
+  .tabs{padding:0 12px}
+  thead th,tbody td{padding:8px 10px}
+}
 </style>
+</head>
+<body>
 
-<h2 class="sr-only">Employee Absence Tracker with hours — Sick day, call out, and vacation tracking</h2>
+<div class="header">
+  <div>
+    <div class="header-title">Pharmacy Employee Absence Log</div>
+    <div class="header-sub">Moncrief Pharmacy · 18 Staff</div>
+  </div>
+  <div id="header-date" style="font-size:12px;opacity:0.6"></div>
+</div>
 
-<div class="app">
 <div class="tabs">
-  <button class="tab active" onclick="showTab('dashboard')"><i class="ti ti-layout-dashboard" aria-hidden="true"></i> Dashboard</button>
-  <button class="tab" onclick="showTab('employees')"><i class="ti ti-users" aria-hidden="true"></i> Employees</button>
-  <button class="tab" onclick="showTab('log')"><i class="ti ti-calendar-event" aria-hidden="true"></i> Log absence</button>
-  <button class="tab" onclick="showTab('report')"><i class="ti ti-chart-bar" aria-hidden="true"></i> Report</button>
+  <button class="tab active" onclick="showTab('dashboard')">Dashboard</button>
+  <button class="tab" onclick="showTab('log')">Log Absence</button>
+  <button class="tab" onclick="showTab('report')">Report</button>
 </div>
 
 <!-- DASHBOARD -->
-<div id="sec-dashboard" class="section active">
-  <div class="grid4" id="stats" style="margin-bottom:1.5rem"></div>
+<div id="page-dashboard" class="page active">
+  <div class="stats-grid" id="stats"></div>
+
   <div class="card">
-    <div class="section-title"><i class="ti ti-calendar-off" aria-hidden="true"></i> Today's absences</div>
-    <div id="today-list"></div>
+    <div class="card-header">
+      <span class="card-title">Today's Absences</span>
+      <span id="today-date" style="font-size:12px;color:#9ca3af"></span>
+    </div>
+    <div class="card-body">
+      <div id="today-table"></div>
+    </div>
   </div>
+
   <div class="card">
-    <div class="section-title"><i class="ti ti-clock" aria-hidden="true"></i> Recent entries</div>
-    <table>
-      <thead><tr><th>Employee</th><th>Date</th><th>Type</th><th>Hours</th><th>Note</th><th></th></tr></thead>
-      <tbody id="recent-table"></tbody>
-    </table>
+    <div class="card-header">
+      <span class="card-title" id="month-label">Monthly Overview</span>
+    </div>
+    <div class="card-body">
+      <table>
+        <thead>
+          <tr>
+            <th>#</th>
+            <th>Employee Name</th>
+            <th class="num">Call Out</th>
+            <th class="num">Leave</th>
+            <th class="num">Total Days</th>
+            <th class="num">Total Hrs</th>
+          </tr>
+        </thead>
+        <tbody id="monthly-table"></tbody>
+      </table>
+    </div>
   </div>
 </div>
 
-<!-- EMPLOYEES -->
-<div id="sec-employees" class="section">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:1rem">
-    <div class="section-title" style="margin:0"><i class="ti ti-users" aria-hidden="true"></i> Employee list</div>
-    <span style="font-size:12px;color:var(--color-text-secondary)">18 employees · Pharmacy</span>
-  </div>
-  <div class="card" style="padding:0.5rem 1.25rem">
-    <div id="emp-list"></div>
-  </div>
-</div>
+<!-- LOG ABSENCE -->
+<div id="page-log" class="page">
+  <div class="form-card">
+    <div class="form-title">Log Absence</div>
 
-<!-- LOG -->
-<div id="sec-log" class="section">
-  <div class="card" style="max-width:480px">
-    <div class="section-title"><i class="ti ti-calendar-plus" aria-hidden="true"></i> Log absence</div>
     <div class="form-group">
       <label>Employee</label>
       <select id="log-emp"></select>
     </div>
+
     <div class="form-group">
       <label>Date</label>
       <input type="date" id="log-date">
     </div>
+
     <div class="form-group">
       <label>Type</label>
-      <div class="type-btns">
-        <button class="type-btn" id="btn-callout" onclick="selectType('callout')"><i class="ti ti-phone-off" aria-hidden="true"></i><br>Call out</button>
-        <button class="type-btn" id="btn-vacation" onclick="selectType('vacation')"><i class="ti ti-beach" aria-hidden="true"></i><br>Leave (Vacation)</button>
+      <div class="type-row">
+        <button class="type-btn" id="btn-callout" onclick="selType('callout')">Call Out</button>
+        <button class="type-btn" id="btn-vacation" onclick="selType('vacation')">Leave (Vacation)</button>
       </div>
     </div>
+
     <div class="form-group">
       <label>Hours</label>
-      <div class="hours-row">
-        <div>
-          <input type="number" id="log-hours" min="0" max="24" step="0.5" placeholder="e.g. 8">
-          <div class="hours-hint">Full day = 8 hrs &nbsp;·&nbsp; Half day = 4 hrs</div>
-        </div>
-        <div style="display:flex;flex-direction:column;gap:6px;padding-top:2px">
-          <button class="btn" style="font-size:12px;padding:5px 10px" onclick="setHours(8)">Full day (8h)</button>
-          <button class="btn" style="font-size:12px;padding:5px 10px" onclick="setHours(4)">Half day (4h)</button>
-        </div>
+      <input type="number" id="log-hours" min="0" max="24" step="0.5" placeholder="e.g. 8">
+      <div class="hours-quick">
+        <button onclick="setH(8)">Full day (8h)</button>
+        <button onclick="setH(4)">Half day (4h)</button>
       </div>
     </div>
+
     <div class="form-group">
-      <label>Note (optional)</label>
+      <label>Note <span style="font-weight:400;text-transform:none;color:#9ca3af">(optional)</span></label>
       <input type="text" id="log-note" placeholder="e.g. doctor's appointment">
     </div>
-    <button class="btn btn-primary" style="width:100%" onclick="logAbsence()"><i class="ti ti-check" aria-hidden="true"></i> Save</button>
-    <div id="log-msg" style="margin-top:10px"></div>
+
+    <button class="btn-submit" onclick="logAbsence()">Save Absence</button>
+    <div id="log-msg"></div>
   </div>
 </div>
 
 <!-- REPORT -->
-<div id="sec-report" class="section">
-  <div class="card">
-    <div class="section-title"><i class="ti ti-filter" aria-hidden="true"></i> Filter</div>
-    <div class="grid3">
-      <div class="form-group"><label>Employee</label><select id="rpt-emp"><option value="">All employees</option></select></div>
-      <div class="form-group"><label>From</label><input type="date" id="rpt-from"></div>
-      <div class="form-group"><label>To</label><input type="date" id="rpt-to"></div>
+<div id="page-report" class="page">
+  <div class="filter-bar">
+    <div>
+      <label>Employee</label>
+      <select id="rpt-emp"><option value="">All employees</option></select>
     </div>
-    <button class="btn btn-primary" onclick="runReport()"><i class="ti ti-search" aria-hidden="true"></i> Generate report</button>
+    <div>
+      <label>From</label>
+      <input type="date" id="rpt-from">
+    </div>
+    <div>
+      <label>To</label>
+      <input type="date" id="rpt-to">
+    </div>
+    <button class="btn-run" onclick="runReport()">Generate</button>
   </div>
   <div id="report-out"></div>
 </div>
-</div>
 
-<!-- ADD EMP MODAL -->
-<div class="modal-bg" id="modal-add-emp">
+<!-- EDIT MODAL -->
+<div class="modal-overlay" id="edit-modal" onclick="if(event.target===this)closeEdit()">
   <div class="modal">
-    <h3><i class="ti ti-user-plus" aria-hidden="true"></i> Add employee</h3>
-    <div class="form-group"><label>Full name</label><input type="text" id="new-name" placeholder="Jane Smith"></div>
-    <div class="form-group"><label>Employee ID</label><input type="text" id="new-id" placeholder="EMP-001"></div>
-    <div class="form-group"><label>Department</label><input type="text" id="new-dept" placeholder="Operations"></div>
-    <div class="form-group"><label>Position</label><input type="text" id="new-pos" placeholder="Staff"></div>
-    <div class="flex-end">
-      <button class="btn" onclick="closeModal()">Cancel</button>
-      <button class="btn btn-primary" onclick="addEmployee()">Add</button>
+    <div class="modal-title">Edit Absence</div>
+    <div class="modal-sub" id="edit-emp-name"></div>
+
+    <div class="form-group">
+      <label>Date</label>
+      <input type="date" id="edit-date">
+    </div>
+    <div class="form-group">
+      <label>Type</label>
+      <div class="type-row">
+        <button class="type-btn" id="edit-btn-callout" onclick="selEditType('callout')">Call Out</button>
+        <button class="type-btn" id="edit-btn-vacation" onclick="selEditType('vacation')">Leave (Vacation)</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Hours</label>
+      <input type="number" id="edit-hours" min="0" max="24" step="0.5" placeholder="e.g. 8">
+      <div class="hours-quick">
+        <button onclick="document.getElementById('edit-hours').value=8">Full day (8h)</button>
+        <button onclick="document.getElementById('edit-hours').value=4">Half day (4h)</button>
+      </div>
+    </div>
+    <div class="form-group">
+      <label>Note <span style="font-weight:400;text-transform:none;color:#9ca3af">(optional)</span></label>
+      <input type="text" id="edit-note" placeholder="e.g. doctor's appointment">
+    </div>
+
+    <div class="modal-footer">
+      <button class="btn-cancel" onclick="closeEdit()">Cancel</button>
+      <button class="btn-save" id="edit-save-btn" onclick="saveEdit()">Save Changes</button>
     </div>
   </div>
 </div>
@@ -168,246 +271,399 @@ tr:last-child td{border-bottom:none}
 <script>
 const DB = 'https://moncrief-pharmacy-absence-log-default-rtdb.firebaseio.com';
 
-const today = () => new Date().toISOString().slice(0,10);
-const initials = n => n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-const bgColors = ['#E6F1FB','#EAF3DE','#EEEDFE','#FAEEDA','#E1F5EE','#FAECE7','#F1EFE8'];
-const fgColors=['#185FA5','#3B6D11','#534AB7','#854F0B','#0F6E56','#993C1D','#5F5E5A'];
-
-let employees=[
-  {id:'EMP-001',name:'BROWN ERICA',dept:'Pharmacy',pos:'Pharm Tech',ci:0},
-  {id:'EMP-002',name:'COSME VALENTIN PAOLA',dept:'Pharmacy',pos:'Pharm Tech',ci:1},
-  {id:'EMP-003',name:'DUDLEY DEANDRE',dept:'Pharmacy',pos:'Pharm Tech',ci:2},
-  {id:'EMP-004',name:'DUNN JAMES',dept:'Pharmacy',pos:'Pharm Tech',ci:3},
-  {id:'EMP-005',name:'GOODWIN MONAE',dept:'Pharmacy',pos:'Pharm Tech',ci:4},
-  {id:'EMP-006',name:'HAMLET ADRIENNE',dept:'Pharmacy',pos:'Pharm Tech',ci:5},
-  {id:'EMP-007',name:'HENDERSON SHANA',dept:'Pharmacy',pos:'Pharm Tech',ci:6},
-  {id:'EMP-008',name:'HIPPS-SMITH KIMBERLY',dept:'Pharmacy',pos:'Pharm Tech',ci:0},
-  {id:'EMP-009',name:'HOWELL-TAYLOR SHARONDA',dept:'Pharmacy',pos:'Pharm Tech',ci:1},
-  {id:'EMP-010',name:'JOHNSON JENNIFER',dept:'Pharmacy',pos:'Pharm Tech',ci:2},
-  {id:'EMP-011',name:'LANCHESTER QUEEN',dept:'Pharmacy',pos:'Pharm Tech',ci:3},
-  {id:'EMP-012',name:'LUCAS APRIL',dept:'Pharmacy',pos:'Pharm Tech',ci:4},
-  {id:'EMP-013',name:'MARZAN-CINTRON MAHARI',dept:'Pharmacy',pos:'Pharm Tech',ci:5},
-  {id:'EMP-014',name:'MCCRAY NADINE',dept:'Pharmacy',pos:'Pharm Tech',ci:6},
-  {id:'EMP-015',name:'SPRINKLE SHAUNA',dept:'Pharmacy',pos:'Pharm Tech',ci:0},
-  {id:'EMP-016',name:'RILEY ALICE',dept:'Pharmacy',pos:'Pharm Tech',ci:1},
-  {id:'EMP-017',name:'WALKER LATORIA',dept:'Pharmacy',pos:'Pharm Tech',ci:2},
-  {id:'EMP-018',name:'WALTER PARIS',dept:'Pharmacy',pos:'Pharm Tech',ci:3},
+const EMPLOYEES = [
+  {id:'EMP-001',name:'BROWN ERICA'},
+  {id:'EMP-002',name:'COSME VALENTIN PAOLA'},
+  {id:'EMP-003',name:'DUDLEY DEANDRE'},
+  {id:'EMP-004',name:'DUNN JAMES'},
+  {id:'EMP-005',name:'GOODWIN MONAE'},
+  {id:'EMP-006',name:'HAMLET ADRIENNE'},
+  {id:'EMP-007',name:'HENDERSON SHANA'},
+  {id:'EMP-008',name:'HIPPS-SMITH KIMBERLY'},
+  {id:'EMP-009',name:'HOWELL-TAYLOR SHARONDA'},
+  {id:'EMP-010',name:'JOHNSON JENNIFER'},
+  {id:'EMP-011',name:'LANCHESTER QUEEN'},
+  {id:'EMP-012',name:'LUCAS APRIL'},
+  {id:'EMP-013',name:'MARZAN-CINTRON MAHARI'},
+  {id:'EMP-014',name:'MCCRAY NADINE'},
+  {id:'EMP-015',name:'SPRINKLE SHAUNA'},
+  {id:'EMP-016',name:'RILEY ALICE'},
+  {id:'EMP-017',name:'WALKER LATORIA'},
+  {id:'EMP-018',name:'WALTER PARIS'}
 ];
+
 let entries = [];
 let selectedType = '';
 
-// ── Firebase REST API ─────────────────────────────────────────
+const today = () => new Date().toISOString().slice(0,10);
+const fmtDate = d => new Date(d+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'});
+const fmtHrs = h => (!h && h!==0) ? '—' : (h%1===0 ? h+'h' : h.toFixed(1)+'h');
+const badge = t => t==='callout'
+  ? '<span class="badge badge-callout">Call Out</span>'
+  : '<span class="badge badge-vacation">Leave</span>';
+
+// ── Firebase ──────────────────────────────────────────────────
 async function fetchEntries() {
   try {
     const res = await fetch(`${DB}/entries.json`);
     const data = await res.json();
-    if (data && typeof data === 'object') {
-      entries = Object.entries(data).map(([key, val]) => ({...val, _id: key}));
-    } else {
-      entries = [];
-    }
-  } catch(e) { console.error('Fetch error:', e); }
+    entries = data && typeof data==='object'
+      ? Object.entries(data).map(([k,v])=>({...v,_id:k}))
+      : [];
+  } catch(e){ console.error(e); }
 }
 
 async function saveEntry(entry) {
-  const res = await fetch(`${DB}/entries.json`, {
-    method: 'POST',
-    headers: {'Content-Type': 'application/json'},
-    body: JSON.stringify(entry)
+  const res = await fetch(`${DB}/entries.json`,{
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(entry)
   });
-  if (!res.ok) throw new Error('Save failed');
-  const result = await res.json();
-  entries.push({...entry, _id: result.name});
+  if(!res.ok) throw new Error();
+  const r = await res.json();
+  entries.push({...entry,_id:r.name});
 }
 
 async function deleteEntry(id) {
-  await fetch(`${DB}/entries/${id}.json`, {method: 'DELETE'});
-  entries = entries.filter(e => e._id !== id);
+  await fetch(`${DB}/entries/${id}.json`,{method:'DELETE'});
+  entries = entries.filter(e=>e._id!==id);
 }
 
-async function showTab(t){
-  document.querySelectorAll('.tab').forEach((b,i)=>b.classList.toggle('active',['dashboard','employees','log','report'][i]===t));
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.getElementById('sec-'+t).classList.add('active');
+async function updateEntry(id, data) {
+  const res = await fetch(`${DB}/entries/${id}.json`,{
+    method:'PATCH',
+    headers:{'Content-Type':'application/json'},
+    body:JSON.stringify(data)
+  });
+  if(!res.ok) throw new Error();
+  const idx = entries.findIndex(e=>e._id===id);
+  if(idx!==-1) entries[idx] = {...entries[idx], ...data};
+}
+
+// ── Edit Modal ────────────────────────────────────────────────
+let editId = '';
+let editType = '';
+
+function openEdit(id) {
+  const entry = entries.find(e=>e._id===id);
+  if(!entry) return;
+  const emp = EMPLOYEES.find(e=>e.id===entry.empId);
+  editId = id;
+  editType = entry.type;
+  document.getElementById('edit-emp-name').textContent = emp ? emp.name : entry.empId;
+  document.getElementById('edit-date').value   = entry.date;
+  document.getElementById('edit-hours').value  = entry.hours ?? '';
+  document.getElementById('edit-note').value   = entry.note || '';
+  selEditType(entry.type);
+  document.getElementById('edit-modal').classList.add('open');
+}
+
+function closeEdit() {
+  document.getElementById('edit-modal').classList.remove('open');
+  editId = ''; editType = '';
+}
+
+function selEditType(t) {
+  editType = t;
+  document.getElementById('edit-btn-callout').className = 'type-btn' + (t==='callout'?' sel-callout':'');
+  document.getElementById('edit-btn-vacation').className = 'type-btn' + (t==='vacation'?' sel-vacation':'');
+}
+
+async function saveEdit() {
+  const date  = document.getElementById('edit-date').value;
+  const hRaw  = document.getElementById('edit-hours').value;
+  const hours = hRaw!=='' ? parseFloat(hRaw) : null;
+  const note  = document.getElementById('edit-note').value.trim();
+  if(!date||!editType||hRaw===''||isNaN(hours)||hours<0) return;
+
+  const btn = document.getElementById('edit-save-btn');
+  btn.disabled=true; btn.textContent='Saving...';
+
+  try {
+    await updateEntry(editId, {date, type:editType, hours, note});
+    closeEdit();
+    // Re-render whichever view is active
+    if(document.getElementById('page-dashboard').classList.contains('active')) renderDashboard();
+    if(document.getElementById('page-report').classList.contains('active')) runReport();
+  } catch(e) {
+    alert('Failed to save. Check your connection.');
+  }
+
+  btn.disabled=false; btn.textContent='Save Changes';
+}
+
+// ── Tabs ──────────────────────────────────────────────────────
+async function showTab(t) {
+  document.querySelectorAll('.tab').forEach((b,i)=>
+    b.classList.toggle('active',['dashboard','log','report'][i]===t));
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.getElementById('page-'+t).classList.add('active');
   await fetchEntries();
-  if(t==='dashboard')renderDashboard();
-  if(t==='employees')renderEmployees();
-  if(t==='log')renderLogSelects();
-  if(t==='report')renderReportSelect();
+  if(t==='dashboard') renderDashboard();
+  if(t==='log') initLog();
+  if(t==='report') initReport();
 }
 
-function typeBadge(type){
-  if(type==='callout')return`<span class="badge badge-callout"><i class="ti ti-phone-off" aria-hidden="true"></i> Call out</span>`;
-  return`<span class="badge badge-vacation"><i class="ti ti-beach" aria-hidden="true"></i> Leave (Vacation)</span>`;
+// ── Dashboard ─────────────────────────────────────────────────
+function renderDashboard() {
+  const td = today();
+  const mo = td.slice(0,7);
+  const todayAbs = entries.filter(e=>e.date===td);
+  const moAbs    = entries.filter(e=>e.date&&e.date.slice(0,7)===mo);
+  const moHrs    = moAbs.reduce((a,b)=>a+(b.hours||0),0);
+  const moCo     = moAbs.filter(e=>e.type==='callout').length;
+  const moVac    = moAbs.filter(e=>e.type==='vacation').length;
+
+  document.getElementById('header-date').textContent =
+    new Date().toLocaleDateString('en-US',{weekday:'short',month:'long',day:'numeric',year:'numeric'});
+
+  document.getElementById('today-date').textContent =
+    new Date().toLocaleDateString('en-US',{month:'long',day:'numeric',year:'numeric'});
+
+  document.getElementById('month-label').textContent =
+    'Monthly Overview — ' + new Date().toLocaleDateString('en-US',{month:'long',year:'numeric'});
+
+  // Stats
+  document.getElementById('stats').innerHTML = `
+    <div class="stat-card">
+      <div class="stat-label">Total Staff</div>
+      <div class="stat-value">${EMPLOYEES.length}</div>
+      <div class="stat-sub">Pharmacy Techs</div>
+    </div>
+    <div class="stat-card accent-red">
+      <div class="stat-label">Out Today</div>
+      <div class="stat-value">${todayAbs.length}</div>
+      <div class="stat-sub">${EMPLOYEES.length - todayAbs.length} present</div>
+    </div>
+    <div class="stat-card accent-amber">
+      <div class="stat-label">Call Outs This Month</div>
+      <div class="stat-value">${moCo}</div>
+      <div class="stat-sub">${moVac} leave</div>
+    </div>
+    <div class="stat-card accent-blue">
+      <div class="stat-label">Absent Hours This Month</div>
+      <div class="stat-value">${moHrs%1===0?moHrs:moHrs.toFixed(1)}<span style="font-size:14px;font-weight:500">h</span></div>
+      <div class="stat-sub">${moAbs.length} total entries</div>
+    </div>`;
+
+  // Today table
+  if(!todayAbs.length) {
+    document.getElementById('today-table').innerHTML =
+      '<div class="empty">No absences recorded today</div>';
+  } else {
+    document.getElementById('today-table').innerHTML = `
+      <table>
+        <thead><tr><th>#</th><th>Employee</th><th>Type</th><th class="num">Hours</th><th>Note</th><th></th></tr></thead>
+        <tbody>
+          ${todayAbs.map((e,i)=>{
+            const emp = EMPLOYEES.find(x=>x.id===e.empId);
+            return `<tr class="absent-row">
+              <td style="color:#9ca3af">${i+1}</td>
+              <td style="font-weight:600">${emp?emp.name:e.empId}</td>
+              <td>${badge(e.type)}</td>
+              <td class="num-val">${fmtHrs(e.hours)}</td>
+              <td style="color:#6b7280">${e.note||'—'}</td>
+              <td style="white-space:nowrap">
+                <button class="btn-edit" onclick="openEdit('${e._id}')">Edit</button>
+                <button class="btn-del" onclick="deleteEntry('${e._id}').then(renderDashboard)">✕</button>
+              </td>
+            </tr>`;
+          }).join('')}
+        </tbody>
+      </table>`;
+  }
+
+  // Monthly overview table
+  const rows = EMPLOYEES.map((emp,i)=>{
+    const ee  = moAbs.filter(e=>e.empId===emp.id);
+    const co  = ee.filter(e=>e.type==='callout').length;
+    const vac = ee.filter(e=>e.type==='vacation').length;
+    const hrs = ee.reduce((a,b)=>a+(b.hours||0),0);
+    const isOut = todayAbs.some(e=>e.empId===emp.id);
+    return `<tr${isOut?' class="absent-row"':''}>
+      <td style="color:#9ca3af">${i+1}</td>
+      <td style="font-weight:${isOut?'600':'400'}">${emp.name}${isOut?' <span class="badge badge-callout" style="font-size:10px;padding:1px 6px">OUT</span>':''}</td>
+      <td class="num-val">${co||'—'}</td>
+      <td class="num-val">${vac||'—'}</td>
+      <td class="num-val">${co+vac||'—'}</td>
+      <td class="num-val">${hrs?fmtHrs(hrs):'—'}</td>
+    </tr>`;
+  }).join('');
+
+  const totCo  = moAbs.filter(e=>e.type==='callout').length;
+  const totVac = moAbs.filter(e=>e.type==='vacation').length;
+  const totHrs = moAbs.reduce((a,b)=>a+(b.hours||0),0);
+
+  document.getElementById('monthly-table').innerHTML = rows + `
+    <tr style="background:#f9fafb;font-weight:700;border-top:2px solid #e5e7eb">
+      <td></td><td style="font-weight:700">TOTAL</td>
+      <td class="num-val">${totCo}</td>
+      <td class="num-val">${totVac}</td>
+      <td class="num-val">${totCo+totVac}</td>
+      <td class="num-val">${fmtHrs(totHrs)}</td>
+    </tr>`;
 }
 
-function fmtHrs(h){if(!h&&h!==0)return'—';return h%1===0?h+'h':h.toFixed(1)+'h';}
-
-function renderDashboard(){
-  const td=today();
-  const todayAbs=entries.filter(e=>e.date===td);
-  const monthAbs=entries.filter(e=>e.date&&e.date.slice(0,7)===td.slice(0,7));
-  const monthHrs=monthAbs.reduce((a,b)=>a+(b.hours||0),0);
-  document.getElementById('stats').innerHTML=`
-    <div class="metric"><div class="metric-label">Total employees</div><div class="metric-value">${employees.length}</div></div>
-    <div class="metric"><div class="metric-label">Out today</div><div class="metric-value" style="color:#854F0B">${todayAbs.length}</div></div>
-    <div class="metric"><div class="metric-label">Call outs this month</div><div class="metric-value">${monthAbs.filter(e=>e.type==='callout').length}<span style="font-size:13px;font-weight:400;color:var(--color-text-secondary)"> days</span></div></div>
-    <div class="metric"><div class="metric-label">Total hrs this month</div><div class="metric-value" style="color:#185FA5">${monthHrs%1===0?monthHrs:monthHrs.toFixed(1)}<span style="font-size:13px;font-weight:400"> h</span></div></div>
-  `;
-
-  const tl=document.getElementById('today-list');
-  if(!todayAbs.length){tl.innerHTML='<p style="color:var(--color-text-secondary);font-size:13px">No absences today</p>';}
-  else tl.innerHTML=todayAbs.map(e=>{
-    const emp=employees.find(x=>x.id===e.empId);if(!emp)return'';
-    return`<div class="emp-row">
-      <div class="avatar" style="background:${bgColors[emp.ci%7]};color:${fgColors[emp.ci%7]}">${initials(emp.name)}</div>
-      <div class="emp-info"><div class="emp-name">${emp.name}</div><div class="emp-dept">${emp.dept}${e.note?' · '+e.note:''}</div></div>
-      <div style="display:flex;align-items:center;gap:6px">${typeBadge(e.type)}<span class="hrs-pill">${fmtHrs(e.hours)}</span></div>
-    </div>`;}).join('');
-
-  const recent=[...entries].sort((a,b)=>b.date.localeCompare(a.date)).slice(0,10);
-  document.getElementById('recent-table').innerHTML=recent.map(e=>{
-    const emp=employees.find(x=>x.id===e.empId);
-    return`<tr>
-      <td>${emp?emp.name:e.empId}</td>
-      <td>${e.date}</td>
-      <td>${typeBadge(e.type)}</td>
-      <td style="font-weight:500">${fmtHrs(e.hours)}</td>
-      <td style="color:var(--color-text-secondary)">${e.note||''}</td>
-      <td><button class="btn" style="padding:3px 8px;font-size:12px" onclick="deleteEntry('${e._id}').then(renderDashboard)"><i class="ti ti-trash" aria-hidden="true"></i></button></td>
-    </tr>`;}).join('');
-}
-
-function renderEmployees(){
-  const m=today().slice(0,7);
-  document.getElementById('emp-list').innerHTML=employees.map(emp=>{
-    const ee=entries.filter(e=>e.empId===emp.id&&e.date&&e.date.slice(0,7)===m);
-    const coH=ee.filter(e=>e.type==='callout').reduce((a,b)=>a+(b.hours||0),0);
-    const vacH=ee.filter(e=>e.type==='vacation').reduce((a,b)=>a+(b.hours||0),0);
-    return`<div class="emp-row">
-      <div class="avatar" style="background:${bgColors[emp.ci%7]};color:${fgColors[emp.ci%7]}">${initials(emp.name)}</div>
-      <div class="emp-info"><div class="emp-name">${emp.name}</div><div class="emp-dept">${emp.id} · ${emp.dept} · ${emp.pos}</div></div>
-      <div style="display:flex;gap:6px;align-items:center;flex-shrink:0">
-        <span class="badge badge-callout">${fmtHrs(coH)} call out</span>
-        <span class="badge badge-vacation">${fmtHrs(vacH)} leave</span>
-        <button class="btn" style="padding:4px 8px;font-size:12px" onclick="removeEmp('${emp.id}')"><i class="ti ti-trash" aria-hidden="true"></i></button>
-      </div>
-    </div>`;}).join('');
-}
-
-function renderLogSelects(){
-  document.getElementById('log-emp').innerHTML=employees.map(e=>`<option value="${e.id}">${e.name}</option>`).join('');
-  document.getElementById('log-date').value=today();
-  document.getElementById('log-hours').value='';
-  document.getElementById('log-note').value='';
-  selectedType='';
+// ── Log Absence ───────────────────────────────────────────────
+function initLog() {
+  document.getElementById('log-emp').innerHTML =
+    EMPLOYEES.map(e=>`<option value="${e.id}">${e.name}</option>`).join('');
+  document.getElementById('log-date').value = today();
+  document.getElementById('log-hours').value = '';
+  document.getElementById('log-note').value = '';
+  document.getElementById('log-msg').innerHTML = '';
+  selectedType = '';
   ['callout','vacation'].forEach(t=>document.getElementById('btn-'+t).className='type-btn');
 }
 
-function selectType(t){
-  selectedType=t;
-  ['callout','vacation'].forEach(x=>document.getElementById('btn-'+x).className='type-btn'+(x===t?' selected-'+t:''));
+function selType(t) {
+  selectedType = t;
+  document.getElementById('btn-callout').className = 'type-btn' + (t==='callout'?' sel-callout':'');
+  document.getElementById('btn-vacation').className = 'type-btn' + (t==='vacation'?' sel-vacation':'');
 }
 
-function setHours(h){document.getElementById('log-hours').value=h;}
+function setH(h){ document.getElementById('log-hours').value = h; }
 
-async function logAbsence(){
-  const empId=document.getElementById('log-emp').value;
-  const date=document.getElementById('log-date').value;
-  const note=document.getElementById('log-note').value;
-  const hoursRaw=document.getElementById('log-hours').value;
-  const hours=hoursRaw!==''?parseFloat(hoursRaw):null;
-  if(!empId||!date||!selectedType){showMsg('Please select employee, date, and type','error');return;}
-  if(hoursRaw===''||isNaN(hours)||hours<0){showMsg('Please enter valid hours','error');return;}
-  const emp=employees.find(e=>e.id===empId);
-  const saveBtn=document.querySelector('[onclick="logAbsence()"]');
-  saveBtn.disabled=true; saveBtn.textContent='Saving...';
+async function logAbsence() {
+  const empId = document.getElementById('log-emp').value;
+  const date  = document.getElementById('log-date').value;
+  const note  = document.getElementById('log-note').value.trim();
+  const hRaw  = document.getElementById('log-hours').value;
+  const hours = hRaw!=='' ? parseFloat(hRaw) : null;
+  const msg   = document.getElementById('log-msg');
+
+  if(!empId||!date||!selectedType){
+    msg.innerHTML='<div class="alert alert-error">Please select employee, date, and type.</div>'; return;
+  }
+  if(hRaw===''||isNaN(hours)||hours<0){
+    msg.innerHTML='<div class="alert alert-error">Please enter valid hours.</div>'; return;
+  }
+
+  const btn = document.querySelector('.btn-submit');
+  btn.disabled=true; btn.textContent='Saving...';
+
   try {
+    const emp = EMPLOYEES.find(e=>e.id===empId);
     await saveEntry({empId,date,type:selectedType,hours,note});
-    showMsg(`✓ ${selectedType==='callout'?'Call out':'Leave (Vacation)'} logged for ${emp.name} — ${fmtHrs(hours)}`,'success');
+    msg.innerHTML=`<div class="alert alert-success">
+      ✓ ${selectedType==='callout'?'Call out':'Leave'} logged for <strong>${emp.name}</strong> — ${fmtHrs(hours)}
+    </div>`;
     document.getElementById('log-hours').value='';
     document.getElementById('log-note').value='';
     selectedType='';
     ['callout','vacation'].forEach(t=>document.getElementById('btn-'+t).className='type-btn');
   } catch(e) {
-    showMsg('Failed to save. Check your connection.','error');
+    msg.innerHTML='<div class="alert alert-error">Failed to save. Check your connection.</div>';
   }
-  saveBtn.disabled=false;
-  saveBtn.innerHTML='<i class="ti ti-check" aria-hidden="true"></i> Save';
+
+  btn.disabled=false; btn.textContent='Save Absence';
+  setTimeout(()=>{ msg.innerHTML=''; }, 4000);
 }
 
-function showMsg(msg,type){
-  const el=document.getElementById('log-msg');
-  const isErr=type==='error';
-  el.innerHTML=`<div class="alert" style="background:${isErr?'#FCEBEB':'#EAF3DE'};color:${isErr?'#A32D2D':'#3B6D11'};border:0.5px solid ${isErr?'#F09595':'#97C459'}">${msg}</div>`;
-  setTimeout(()=>{el.innerHTML=''},3000);
+// ── Report ────────────────────────────────────────────────────
+function initReport() {
+  document.getElementById('rpt-emp').innerHTML =
+    '<option value="">All employees</option>' +
+    EMPLOYEES.map(e=>`<option value="${e.id}">${e.name}</option>`).join('');
+  const m = today();
+  document.getElementById('rpt-from').value = m.slice(0,8)+'01';
+  document.getElementById('rpt-to').value   = m;
+  runReport();
 }
 
-function closeModal(){document.getElementById('modal-add-emp').classList.remove('open');}
+function runReport() {
+  const empId = document.getElementById('rpt-emp').value;
+  const from  = document.getElementById('rpt-from').value;
+  const to    = document.getElementById('rpt-to').value;
 
-function renderReportSelect(){
-  document.getElementById('rpt-emp').innerHTML='<option value="">All employees</option>'+employees.map(e=>`<option value="${e.id}">${e.name}</option>`).join('');
-  const m=today();
-  document.getElementById('rpt-from').value=m.slice(0,8)+'01';
-  document.getElementById('rpt-to').value=m;
-}
+  let filtered = entries.filter(e=>e.date>=from&&e.date<=to);
+  if(empId) filtered = filtered.filter(e=>e.empId===empId);
 
-function runReport(){
-  const empId=document.getElementById('rpt-emp').value;
-  const from=document.getElementById('rpt-from').value;
-  const to=document.getElementById('rpt-to').value;
-  let filtered=entries.filter(e=>e.date>=from&&e.date<=to);
-  if(empId)filtered=filtered.filter(e=>e.empId===empId);
-  const empList=empId?employees.filter(e=>e.id===empId):employees;
+  if(!filtered.length) {
+    document.getElementById('report-out').innerHTML =
+      '<div class="card"><div class="empty">No records found for this period.</div></div>';
+    return;
+  }
 
-  document.getElementById('report-out').innerHTML=empList.map(emp=>{
-    const ee=filtered.filter(e=>e.empId===emp.id);
-    if(!ee.length)return'';
-    const coH=ee.filter(e=>e.type==='callout').reduce((a,b)=>a+(b.hours||0),0);
-    const vacH=ee.filter(e=>e.type==='vacation').reduce((a,b)=>a+(b.hours||0),0);
-    const totalH=coH+vacH;
-    const coDays=ee.filter(e=>e.type==='callout').length;
-    const vacDays=ee.filter(e=>e.type==='vacation').length;
-    const rows=ee.sort((a,b)=>b.date.localeCompare(a.date)).map(e=>`
-      <tr>
-        <td>${e.date}</td>
-        <td>${typeBadge(e.type)}</td>
-        <td style="font-weight:500">${fmtHrs(e.hours)}</td>
-        <td style="color:var(--color-text-secondary)">${e.note||''}</td>
-        <td><button class="btn" style="padding:3px 8px;font-size:12px" onclick="deleteEntry('${e._id}').then(runReport)"><i class="ti ti-trash" aria-hidden="true"></i></button></td>
-      </tr>`).join('');
-    return`<div class="card">
-      <div style="display:flex;align-items:center;gap:10px;margin-bottom:1rem">
-        <div class="avatar" style="background:${bgColors[emp.ci%7]};color:${fgColors[emp.ci%7]}">${initials(emp.name)}</div>
-        <div><div style="font-weight:500">${emp.name}</div><div style="font-size:12px;color:var(--color-text-secondary)">${emp.id} · ${emp.dept}</div></div>
+  // Summary table
+  const empList = empId ? EMPLOYEES.filter(e=>e.id===empId) : EMPLOYEES;
+  const summaryRows = empList.map((emp,i)=>{
+    const ee  = filtered.filter(e=>e.empId===emp.id);
+    if(!ee.length) return '';
+    const co  = ee.filter(e=>e.type==='callout').length;
+    const vac = ee.filter(e=>e.type==='vacation').length;
+    const hrs = ee.reduce((a,b)=>a+(b.hours||0),0);
+    return `<tr>
+      <td style="color:#9ca3af">${i+1}</td>
+      <td style="font-weight:600">${emp.name}</td>
+      <td class="num-val">${co||'—'}</td>
+      <td class="num-val">${vac||'—'}</td>
+      <td class="num-val">${co+vac}</td>
+      <td class="num-val">${fmtHrs(hrs)}</td>
+    </tr>`;
+  }).join('');
+
+  const totCo  = filtered.filter(e=>e.type==='callout').length;
+  const totVac = filtered.filter(e=>e.type==='vacation').length;
+  const totHrs = filtered.reduce((a,b)=>a+(b.hours||0),0);
+
+  // Detail table
+  const detailRows = [...filtered]
+    .sort((a,b)=>b.date.localeCompare(a.date))
+    .map(e=>{
+      const emp = EMPLOYEES.find(x=>x.id===e.empId);
+      return `<tr>
+        <td>${fmtDate(e.date)}</td>
+        <td style="font-weight:600">${emp?emp.name:e.empId}</td>
+        <td>${badge(e.type)}</td>
+        <td class="num-val">${fmtHrs(e.hours)}</td>
+        <td style="color:#6b7280">${e.note||'—'}</td>
+        <td style="white-space:nowrap">
+          <button class="btn-edit" onclick="openEdit('${e._id}')">Edit</button>
+          <button class="btn-del" onclick="deleteEntry('${e._id}').then(runReport)">✕</button>
+        </td>
+      </tr>`;
+    }).join('');
+
+  document.getElementById('report-out').innerHTML = `
+    <div class="card" style="margin-bottom:16px">
+      <div class="card-header"><span class="card-title">Summary — ${fmtDate(from)} to ${fmtDate(to)}</span></div>
+      <div class="card-body">
+        <table>
+          <thead><tr><th>#</th><th>Employee</th><th class="num">Call Out</th><th class="num">Leave</th><th class="num">Total Days</th><th class="num">Total Hrs</th></tr></thead>
+          <tbody>
+            ${summaryRows}
+            <tr style="background:#f9fafb;font-weight:700;border-top:2px solid #e5e7eb">
+              <td></td><td>TOTAL</td>
+              <td class="num-val">${totCo}</td>
+              <td class="num-val">${totVac}</td>
+              <td class="num-val">${totCo+totVac}</td>
+              <td class="num-val">${fmtHrs(totHrs)}</td>
+            </tr>
+          </tbody>
+        </table>
       </div>
-      <div class="rpt-summary">
-        <div class="rpt-metric" style="border-left:2px solid #EF9F27">
-          <div class="rpt-metric-label">Call out</div>
-          <div class="rpt-metric-value" style="color:#854F0B">${fmtHrs(coH)}</div>
-          <div class="rpt-metric-sub">${coDays} occurrence${coDays!==1?'s':''}</div>
-        </div>
-        <div class="rpt-metric" style="border-left:2px solid #85B7EB">
-          <div class="rpt-metric-label">Leave (Vacation)</div>
-          <div class="rpt-metric-value" style="color:#185FA5">${fmtHrs(vacH)}</div>
-          <div class="rpt-metric-sub">${vacDays} occurrence${vacDays!==1?'s':''}</div>
-        </div>
+    </div>
+
+    <div class="card">
+      <div class="card-header"><span class="card-title">All Entries</span><span style="font-size:12px;color:#9ca3af">${filtered.length} records</span></div>
+      <div class="card-body">
+        <table>
+          <thead><tr><th>Date</th><th>Employee</th><th>Type</th><th class="num">Hours</th><th>Note</th><th></th></tr></thead>
+          <tbody>${detailRows}</tbody>
+        </table>
       </div>
-      <div style="display:flex;justify-content:flex-end;align-items:center;gap:6px;margin-bottom:10px">
-        <span style="font-size:12px;color:var(--color-text-secondary)">Total absence hours:</span>
-        <span style="font-size:16px;font-weight:500">${fmtHrs(totalH)}</span>
-      </div>
-      <table><thead><tr><th>Date</th><th>Type</th><th>Hours</th><th>Note</th><th></th></tr></thead><tbody>${rows}</tbody></table>
-    </div>`;}).join('')||'<p style="color:var(--color-text-secondary)">No data for this period.</p>';
+    </div>`;
 }
 
-// Init: load from Firebase then render
+// ── Init ──────────────────────────────────────────────────────
 fetchEntries().then(renderDashboard);
+initLog();
 
-// Auto-refresh every 30 seconds so all devices stay in sync
-setInterval(async () => {
+setInterval(async()=>{
   await fetchEntries();
-  if(document.getElementById('sec-dashboard').classList.contains('active')) renderDashboard();
-  if(document.getElementById('sec-employees').classList.contains('active')) renderEmployees();
+  if(document.getElementById('page-dashboard').classList.contains('active')) renderDashboard();
 }, 30000);
 </script>
+</body>
+</html>
